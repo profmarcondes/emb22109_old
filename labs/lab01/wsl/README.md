@@ -2,13 +2,13 @@
 
 ## Instalando o WSL no Windows
 
-Inicialmente o WSL deve ser instalado, para isso, abra um terminal PoweShell em modo Administrador e execute o comando
+Inicialmente o WSL deve ser instalado, para isso, abra um terminal PowerShell em modo Administrador e execute o comando:
 
 `wsl --install -d Ubuntu`
 
-O processo de instalação deve demorar um pouco, realizando o download de todos os componentes necessários. Ao final será solicitado um nome de usuário e senha. Pode escolher livremente esses dados, mas use um senha que não irá se esquecer, pois precisaremos dela sempre que executarmos comandos com o sudo.
+O processo de instalação pode demorar um pouco devido ao download de todos os componentes necessários, caso não estejam previamente instalados. Ao final será solicitado um nome de usuário e senha. Pode escolher livremente esses dados, mas use uma senha que não irá se esquecer, pois precisaremos dela sempre que executarmos comandos com o sudo.
 
-Maiores detalhes sobre a instalação do WSL podem ser consultados neste [site](https://learn.microsoft.com/pt-br/windows/wsl/install).
+Maiores detalhes sobre a instalação do WSL podem ser consultados no site https://learn.microsoft.com/pt-br/windows/wsl/install.
 
 ## Evitando a integração o WSL com o caminho de executáveis do Windows
 
