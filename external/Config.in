@@ -1,0 +1,4 @@
+# Place holder for load packages Config.in
+menu "EMB22109 External Packages"
+
+endmenu
