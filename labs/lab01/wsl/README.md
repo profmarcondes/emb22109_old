@@ -22,43 +22,105 @@ enabled = false
 appendWindowsPath = false
 ```
 
+## Conectando dispositivos USB ao WSL
 
-# Arquivo old
+Para permitir a conexão de dispositivos USB diretamente ao WSL, é necessário a instalação do USBIPD, que cria um serviço para roteamente dos dados USB vi IP para a máquina virtual do WSL.
 
-## Notes para uso do Buildroot - WSL 
+Para instalar este componente, siga as instruções do site https://docs.microsoft.com/pt-br/windows/wsl/connect-usb
 
--> Para conectar devices USB - instalar usbipd
-https://docs.microsoft.com/pt-br/windows/wsl/connect-usb
+Após instalado, utilizaremos os seguintes comandos para conectar um dispositivo USB no Ubuntu do WSL
 
--> Compilar o kernel do wsl com suporte para usb-storage
-https://microhobby.com.br/blog/2019/09/21/compiling-your-own-linux-kernel-for-windows-wsl2/
-   - sudo apt install git bc build-essential flex bison libssl-dev libelf-dev dwarves
-   - git clone https://github.com/microsoft/WSL2-Linux-Kernel.git
-  - interessante support usb-serial / prolific usbserial
-  - Config -> config-usb_storage (copiar para /WSL2-Linux-Kernel/Microsoft/)
-  - Compilar o kernel 
-     - make KCONFIG_CONFIG=Microsoft/config-usb_storage -j8
-  - Copiar o vmlinux para o seu home(Windows), junto com o 
-    .wslconfig (atualizar path no arquivo)
+Em uma interface do PowerShell, utilize o comando abaixo para listar todos os dispositivos que estão conectados na USB do computador. 
 
-## Para conectar o dispositivo usb
+`usbipd wsl list`
 
-Pshell$ usbipd wsl list
-Pshell$ usbipd wsl attach --busid <busid>
+Uma vez identificado o dispositivo que deseja conectar ao Ubuntu no WSL, utilize o comando abaixo, substituindo o <busid> pelo identificador listado pelo comando anterior.
 
-bash$ lsusb
+`usbipd wsl attach --busid <busid>`
 
-## 
-Pshell$ usbipd wsl detach --busid <busid>
+Caso esteja conectando o dispositivo pela primeira vez, é necessário executar o comando attach do usbipd em um terminal do PowerShell privilegiado (modo Administrador). Após a primeira conexão (do mesmo dispositivo), não é mais necessário o uso do terminal privilegiado.
 
+Caso queira desconectar o dispositivo USB do WSL, utilize o comando:
 
-# no wsl
+`usbipd wsl detach --busid <busid>`
 
-Uso da serial :-> sudo picocom -b 115200 /dev/ttyUSB0
+## Atualizando o kernel do WSL para suportar o Leitor de cartão SD e conversor serial
 
-Network:
-Config sem DHCP na BeagleBone
- sudo ifconfig eth1 192.168.0.3 netmask 255.255.255.0
+O WSL utiliza uma versão de kernel no Ubuntu customizada para integrar-se melhor com o Windows, desta forma, para que o leitor de cartão SD e o conversor USB-Serial que utilizamos seja reconhecido no Ubuntu, é necessário recompilar o kernel para o WSL, com o suporte para esses dispositivos.
 
-Config com DHCP
- sudo dhclient eth1
+Para isso iremos utilizar o próprio WSL para gerar a imagem do kernel utilizado pelo WSL, baseado nas instruções presentes no link https://microhobby.com.br/blog/2019/09/21/compiling-your-own-linux-kernel-for-windows-wsl2/
+
+### Passo a passo resumido
+
+1. Instalar no WSL as ferramentas para compilação do kernel:
+
+`sudo apt install git bc build-essential flex bison libssl-dev libelf-dev dwarves`
+
+2. Baixar o código fonte do kernel modificado pelo Microsoft:
+
+`git clone https://github.com/microsoft/WSL2-Linux-Kernel.git`
+
+3. Habilitar os drivers necessários para configuração do kernel
+
+   1. Abrir a ferramenta KCONFIG com o comando
+
+   `make KCONFIG_CONFIG=Microsoft/config-wsl menuconfig`
+
+   2. Habilitar a configuração "USB Mass Storage support" (CONFIG_USB_STORAGE=y) no menu:
+      - Device Drivers
+        - USB Support
+          - USB Mass Storage support
+
+      O item deve ser marcado com o "*" e não como módulo (m).
+   
+   3. Habilitar a configuração "USB Prolific 2303 Single Port Serial Driver" (CONFIG_USB_SERIAL_PL2303=y) no menu:
+      - Device Drivers
+        - USB Support
+          - USB Serial Converter support
+            - USB Prolific 2303 Single Port Serial Driver
+
+      O item deve ser marcado com o "*" e não como módulo (m).
+
+   4. Sair da ferramenta, confirmando que a configuração deve ser salva ao final.
+
+   5. Dentro da árvore do kernel, edite manualmente o arquivo Microsoft/config-wsl, alterando o texto da configuração CONFIG_LOCALVERSION, para identificar a versão do kernel que está utilizando. A sugestão é para utilizar o texto "-microsoft-emb22109-WSL2"
+   
+4. Iniciar o processo de compilação do kernel através do comando:
+
+   `make KCONFIG_CONFIG=Microsoft/config-wsl -j8`
+
+5. Ao final do processo de compilação, será gerado um arquivo chamado vmlinux. Este arquivo deve ser copiado para o diretório HOME do seu usuário no Windows (Ex. C:\Users\hugom\vmlinux)
+
+6. Criar um arquivo no seu diretório HOME (C:\Users\hugom) chamado .wslconfig com o seguinte conteúdo:
+
+```
+[wsl2]
+kernel=C:\\Users\\hugom\\vmlinux
+```
+   
+   Observe o uso de contrabarra duplas, e não esquece de substituir o nome da pasta (hugom) pelo nome do seu usuário no Windows.
+
+7. Neste momento o WSL no seu usuário do Windows já está configurado para utilizar o kernel que compilamos com as modificações necessárias. Para certificarmos que o mesmo está funcional, proceda com os seguintes passos:
+
+   1. Desligue a instância do WSL executando o seguinte comando:
+
+   `wsl --shutdown`
+
+   2. Inicie o WSL novamente, podendo abrir Ubuntu no Windows, ou simplesmente executando o comando wsl.exe no PowerShell
+
+   3. Dentro do Ubuntu, execute o comando abaixo:
+
+   `uname -a`
+
+   4. A saída deste programa deve conter o mesmo texto que foi configurado na config CONFIG_LOCALVERSION, na etapa de compilação do kernel para o WSL. Veja o exemplo de saída com a sugestão mencionada:
+
+   `Linux stardust 5.15.74.2-microsoft-emb22109-WSL2+ #1 SMP Wed Nov 16 14:42:42 -03 2022 x86_64 x86_64 x86_64 GNU/Linux`
+
+## Conclusão
+
+Com a realização destes passos, a sua instalação do WSL no Windows está apta a seguir os passos dos laboratórios que iremos executar. Haverá algumas diferenças para alguns comandos quando for necessário realizar o acesso à dispositivos USB. A documentação dos laboratórios irá detalhar 
+essas diferenças quando necessário. 
+
+Clique no link abaixo para continuar na preparação do seu ambiente de desenvolvimento para uso do Buildroot
+
+[Lab01 - Tutorial](../README.md)
