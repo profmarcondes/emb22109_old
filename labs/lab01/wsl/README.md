@@ -4,7 +4,9 @@
 
 Inicialmente o WSL deve ser instalado, para isso, abra um terminal PowerShell em modo Administrador e execute o comando:
 
-`wsl --install -d Ubuntu`
+```
+wsl --install -d Ubuntu
+```
 
 O processo de instalação pode demorar um pouco devido ao download de todos os componentes necessários, caso não estejam previamente instalados. Ao final será solicitado um nome de usuário e senha. Pode escolher livremente esses dados, mas use uma senha que não irá se esquecer, pois precisaremos dela sempre que executarmos comandos com o sudo.
 
@@ -14,7 +16,7 @@ Maiores detalhes sobre a instalação do WSL podem ser consultados no site https
 
 O WSL no Windows possui uma integração que permite a execução de comandos nativos do Windows, dentro do ambiente do WSL. Apesar se ser uma integração interessante, a mesma gera um conflito para o uso do Buildroot, relacionado a variável de ambiente $PATH. Por este motivo, iremos desativar essa integração.
 
-Para isso, iremos editar dentro do Ubuntu instalado no WSL o arquivo /etc/wsl.conf. Crie o arquivo, caso o mesmo não existe. Dentre deste arquivo, garanta que as seguintes configurações estejam ativas:
+Para isso, iremos editar dentro do Ubuntu instalado no WSL o arquivo /etc/wsl.conf. Crie o arquivo, caso o mesmo não exista. Dentro deste arquivo, garanta que as seguintes configurações estejam ativas:
 
 ```
 [interop]
@@ -24,25 +26,30 @@ appendWindowsPath = false
 
 ## Conectando dispositivos USB ao WSL
 
-Para permitir a conexão de dispositivos USB diretamente ao WSL, é necessário a instalação do USBIPD, que cria um serviço para roteamente dos dados USB vi IP para a máquina virtual do WSL.
+Para permitir a conexão de dispositivos USB diretamente ao WSL, é necessário a instalação do USBIPD, que cria um serviço para roteamente dos dados USB via IP para a máquina virtual do WSL.
 
 Para instalar este componente, siga as instruções do site https://docs.microsoft.com/pt-br/windows/wsl/connect-usb
 
-Após instalado, utilizaremos os seguintes comandos para conectar um dispositivo USB no Ubuntu do WSL
+Após instalado, utilizaremos os seguintes comandos para conectar um dispositivo USB no Ubuntu do WSL.
 
 Em uma interface do PowerShell, utilize o comando abaixo para listar todos os dispositivos que estão conectados na USB do computador. 
 
-`usbipd wsl list`
-
+```
+usbipd wsl list
+```
 Uma vez identificado o dispositivo que deseja conectar ao Ubuntu no WSL, utilize o comando abaixo, substituindo o <busid> pelo identificador listado pelo comando anterior.
 
-`usbipd wsl attach --busid <busid>`
+```
+usbipd wsl attach --busid <busid>
+```
 
 Caso esteja conectando o dispositivo pela primeira vez, é necessário executar o comando attach do usbipd em um terminal do PowerShell privilegiado (modo Administrador). Após a primeira conexão (do mesmo dispositivo), não é mais necessário o uso do terminal privilegiado.
 
 Caso queira desconectar o dispositivo USB do WSL, utilize o comando:
 
-`usbipd wsl detach --busid <busid>`
+```
+usbipd wsl detach --busid <busid>
+```
 
 ## Atualizando o kernel do WSL para suportar o Leitor de cartão SD e conversor serial
 
@@ -54,17 +61,24 @@ Para isso iremos utilizar o próprio WSL para gerar a imagem do kernel utilizado
 
 1. Instalar no WSL as ferramentas para compilação do kernel:
 
-`sudo apt install git bc build-essential flex bison libssl-dev libelf-dev dwarves`
+```
+sudo apt install git bc build-essential flex bison libssl-dev libelf-dev dwarves
+```
 
-2. Baixar o código fonte do kernel modificado pelo Microsoft:
+2. Baixar o código fonte do kernel modificado pelo Microsoft e entrar na pasta:
 
-`git clone https://github.com/microsoft/WSL2-Linux-Kernel.git`
+```
+git clone https://github.com/microsoft/WSL2-Linux-Kernel.git
+cd WSL2-Linux-Kernel
+```
 
 3. Habilitar os drivers necessários para configuração do kernel
 
    1. Abrir a ferramenta KCONFIG com o comando
 
-   `make KCONFIG_CONFIG=Microsoft/config-wsl menuconfig`
+   ```
+   make KCONFIG_CONFIG=Microsoft/config-wsl menuconfig
+   ```
 
    2. Habilitar a configuração "USB Mass Storage support" (CONFIG_USB_STORAGE=y) no menu:
       - Device Drivers
@@ -87,7 +101,9 @@ Para isso iremos utilizar o próprio WSL para gerar a imagem do kernel utilizado
    
 4. Iniciar o processo de compilação do kernel através do comando:
 
-   `make KCONFIG_CONFIG=Microsoft/config-wsl -j8`
+   ```
+   make KCONFIG_CONFIG=Microsoft/config-wsl -j8
+   ```
 
 5. Ao final do processo de compilação, será gerado um arquivo chamado vmlinux. Este arquivo deve ser copiado para o diretório HOME do seu usuário no Windows (Ex. C:\Users\hugom\vmlinux)
 
@@ -104,13 +120,17 @@ kernel=C:\\Users\\hugom\\vmlinux
 
    1. Desligue a instância do WSL executando o seguinte comando:
 
-   `wsl --shutdown`
+   ```
+   wsl --shutdown
+   ```
 
    2. Inicie o WSL novamente, podendo abrir Ubuntu no Windows, ou simplesmente executando o comando wsl.exe no PowerShell
 
    3. Dentro do Ubuntu, execute o comando abaixo:
 
-   `uname -a`
+   ```
+   uname -a
+   ```
 
    4. A saída deste programa deve conter o mesmo texto que foi configurado na config CONFIG_LOCALVERSION, na etapa de compilação do kernel para o WSL. Veja o exemplo de saída com a sugestão mencionada:
 
