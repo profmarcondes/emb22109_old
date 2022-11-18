@@ -22,8 +22,7 @@ sudo apt install git vim nano
 Instalar as seguintes dependências para uso do Buildroot
 
 ```
-sudo apt install sed make binutils gcc g++ bash patch \
-gzip bzip2 perl tar cpio python unzip rsync wget libncurses-dev
+sudo apt install sed make binutils gcc g++ bash patch gzip bzip2 perl tar cpio python unzip rsync wget libncurses-dev
 ```
 
 Clonar o repositório com o comando
@@ -56,46 +55,59 @@ Realize as seguintes configurações na ferramenta:
 
 Neste menu iremos configurar a arquitetura alvo de nosso sistema embarcado. A plataforma Beagle Bone Black é baseada na arquitetura ARM, e de acordo com a documentação disponível em https://beagleboard.org/BLACK, a mesma utiliza o SoC da Texas Instruments AM335x, que é baseado em um ARM Cortex-A8. Desta forma, realize as seguintes configurações:
 
-  1. Selecione ARM (little endian) como  target architecture
-  2. Selecione cortex-A8 como Target Architecture Variant
+  - Selecione ARM (little endian) como  target architecture
+  - Selecione cortex-A8 como Target Architecture Variant
 
 #### Build options
 
 Por hora não necessitamos modificar nenhum configuração do menu Build Options. De qualquer forma, aproveita para visitar esse menu e observar as opções de configuração que temos disponível. A ferramenta KConfig possui uma opção de ajuda para descrever mais informações sobre cada item de configuração. 
 
-<!--
-## Toolchain
-
-
- - External toolchain as the Toolchain type
- - Select Arm ARM 2021.07 as the Toolchain
+#### Toolchain
+  - Configure External toolchain como Toolchain type
+  - Selecione Arm ARM 2021.07 como Toolchain
  
-System
- - Set root password
+#### System
+ - Configure a senha de root (Root password). Utilize a senha padrão tmp1223
  
-Kinux Kernel
- - 5.15.35 - version
- - defconfig - omap2plus
- - zImage format
- - enable Build a Device Tree Blob (DTB) 
- - am335x-boneblack as the In-tree Device Tree Source file names
- - Needs host OpenSSL option.
+#### Linux Kernel
+ - Habilitar a opção de Linux Kernel 
+ - Kernel version -> selecionar "Custom version" e configurar a versão 5.15.35
+ - Configurar Defconfig name com "omap2plus"
+ - Kernel binary format, utilizar zImage
+ - Habilite a opção "Build a Device Tree Blob (DTB)" 
+ - Configurar In-tree Device Tree Source file names com "am335x-boneblack"
+ - Habilitar opção "Needs host OpenSSL"
  
-Target Packages
+#### Target Packages
 
-Filesystem
+Por hora não iremos habilitar nenhum outro pacote nesta configuração inicial
 
-Uboot
- - Select Kconfig as the Build system.
- - custom version of U-Boot 2022.04
- - use am335x_evm as Board defconfig
- - U-Boot needs OpenSSL
- - select u-boot.img as the U-Boot binary format
- - enable Install U-Boot SPL binary image 
- - use MLO as the U-Boot SPL binary image name
- - DEVICE_TREE=am335x-boneblack as Custom make options
-   -- U-Boot needs dtc ??
+#### Filesystem
 
-# build 
- make 2>&1 | tee build.log
--->
+Por hora não iremos modificar a opção padrão (tar the root filesystem)
+
+#### Bootloaders
+
+  - Habilitar o U-boot
+  - Confirmar o BUild system como Kconfig
+  - U-Boot version -> selecionar "Custom version" e configurar a versão 2022.04
+  - Configurar Board defconfig como am335x_evm
+  - Marcar U-Boot needs OpenSSL
+  - No menu U-Boot binary format
+    - Desmarcar "u-boot.bin"
+    - Marcar "u-boot.img"
+  - Habilitar Install U-Boot SPL binary image 
+  - Configurar U-Boot SPL binary image name com "MLO"
+  - Configurar Custom make options com "DEVICE_TREE=am335x-boneblack"
+
+#### Finalizando a configuração e gerando o Linux Embarcado
+
+Pronto, agora sai de todos os menus da ferramenta Kconfig, não se esquecendo de confirmar a gravação das configurações no sistema, respondeno Yes quando perguntado.
+
+Você irá voltar a linha de comando, dentro da pasta do Buildroot. Para iniciar a geração do sistema, basta executar o comando ```make```, mas iremos modificar um pouco o comando para criar também um arquivo de log de toda a geração do sistema, desta forma, execute o comando:
+
+```
+make 2>&1 | tee build.log
+```
+
+Pronto ! Agora esse processo deve demorar um pouquinho devido a necessidade de baixar todos os pacotes dos componentes necessários, além da compilação do kernel também ser um pouco demorada.
