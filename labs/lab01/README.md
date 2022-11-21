@@ -124,6 +124,8 @@ the TX (green) and RX (white) wires to the pins 4 (board RX) and 5 (board TX). Y
 make sure that you connect the TX pin of the cable to the RX pin of the board, and vice-versa, 
 whatever the board and cables that you use.
 
+![Conexao](imgs/beaglebone-black-serial-connection.jpg)
+
 Once the USB to Serial connector is plugged in, a new serial port should appear: /dev/ttyUSB0.
 
 You can also see this device appear by looking at the output of dmesg.
