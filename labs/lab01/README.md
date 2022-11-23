@@ -130,8 +130,7 @@ Once the USB to Serial connector is plugged in, a new serial port should appear:
 
 You can also see this device appear by looking at the output of dmesg.
 
-To communicate with the board through the serial port, install a serial communication program,
-such as picocom:
+To communicate with the board through the serial port, install a serial communication program, such as picocom:
 
 ```
 sudo apt install picocom
