@@ -20,11 +20,12 @@ Now that we have discussed during the lectures the organization of the Buildroot
 
 ## Use a rootfs overlay to setup the network
 
-The BeagleBone Black Wireless does not have any Ethernet interface, so we will use Ethernet over USB to provide network connectivity between our embedded system and the development PC. To achieve this we will need to:
+We will use Ethernet over USB to provide network connectivity between our embedded system and the development PC. To achieve this we will need to:
 
 1. Add an init script to setup network over USB
 2. Add a configuration file that configures the network interface with the appropriate IP
 address
+3. Instal DHCP Server to provide automatic configuration of network on development PC.
 
 ### Init script for USB network setup
 
