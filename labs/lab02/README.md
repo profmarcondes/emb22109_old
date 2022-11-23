@@ -1,22 +1,22 @@
 # Lab 02
 
 Objectives:
-  • Explore the build output
-  • Customize the root filesystem using a rootfs overlay
-  • Customize the Linux kernel configuration
-  • Use a post-build script
-  • Customize the kernel with patches and
-  • Add more packages
-  • Use defconfig files and out of tree build
+  - Explore the build output
+  - Customize the root filesystem using a rootfs overlay
+  - Customize the Linux kernel configuration
+  - Use a post-build script
+  - Customize the kernel with patches and
+  - Add more packages
+  - Use defconfig files and out of tree build
 
 ## Explore the build output
 
 Now that we have discussed during the lectures the organization of the Buildroot output tree, take some time to look inside output/ for the different build artefacts. And especially:
 
-  • Identify where the cross-compiler has been installed.
-  • Identify where the source code for the different components has been extracted, and  which packages have been built.
-  • Identify where the target root filesystem has been created, and read the `THIS_IS_NOT_YOUR_ROOT_FILESYSTEM` file.
-  • See where the staging symbolic link is pointing to.
+  - Identify where the cross-compiler has been installed.
+  - Identify where the source code for the different components has been extracted, and  which packages have been built.
+  - Identify where the target root filesystem has been created, and read the `THIS_IS_NOT_YOUR_ROOT_FILESYSTEM` file.
+  - See where the staging symbolic link is pointing to.
 
 ## Use a rootfs overlay to setup the network
 
@@ -32,7 +32,7 @@ There are different mechanisms to configure USB gadget with Linux: we will use t
 configfs interface, which allows from user-space to create USB devices providing an arbitrary set of functionalities[^usb_gadget]. 
 [^usb_gadget]: See https://elinux.org/images/e/ef/USB_Gadget_Configfs_API_0.pdf for more details
 
-Since the setup of such a USB gadget is not trivial, we provide a ready-to-use shell script that we will add to the init scripts of the Buildroot system. The script is called `S30usbgadget` and is available from this lab data directory at (files/S30usbgadget).
+Since the setup of such a USB gadget is not trivial, we provide a ready-to-use shell script that we will add to the init scripts of the Buildroot system. The script is called `S30usbgadget` and is available from this repository in [/labs/lab02/files/S30usbgadget](./files/S30usbgadget).
 
 We could copy this script directly to our SD card, but this would mean that the next time we reflash the SD card with the root filesystem produced by Buildroot, we would lose those changes.
 
@@ -143,9 +143,9 @@ make linux-menuconfig
 
 In the kernel configuration, enable the following kernel options (use the / search engine to easily find those options):
 
-  • CONFIG_HW_RANDOM
-  • CONFIG_HW_RANDOM_OMAP
-  • CONFIG_HW_RANDOM_OMAP3_ROM
+  - CONFIG_HW_RANDOM
+  - CONFIG_HW_RANDOM_OMAP
+  - CONFIG_HW_RANDOM_OMAP3_ROM
 
 You’ll notice that they were already enabled, but as modules. We need them to be statically
 enabled in the kernel, to have the hardware random number generator ready directly at boot
@@ -211,10 +211,10 @@ make linux-menuconfig
 
 This will:
   
-  • Extract the Linux kernel sources
-  • Apply our two patches
-  • Load the current kernel configuration, from board/ifsc/beagleboneblack/linux.config as we have modified earlier in this lab.
-  • Start the kernel menuconfig tool
+  - Extract the Linux kernel sources
+  - Apply our two patches
+  - Load the current kernel configuration, from board/ifsc/beagleboneblack/linux.config as we have modified earlier in this lab.
+  - Start the kernel menuconfig tool
 
 Once in the kernel menuconfig, enable the option **CONFIG_JOYSTICK_WIICHUCK**, and make sure it is enabled statically. Also, make sure the **CONFIG_INPUT_EVDEV** option is enabled statically (by default it is enabled as a module). Once those options are set, leave the kernel menuconfig.
 
@@ -243,10 +243,10 @@ We will connect it to the second I2C port of the CPU (i2c1), with pins available
 connector.
 
 Connect the nunchuk pins:
-• The GND pin to P9 pins 1 or 2 (GND) - Purple Wire
-• The PWR pin to P9 pins 3 or 4 (DC_3.3V) - Blue Wire
-• The CLK pin to P9 pin 17 (I2C1_SCL) - Yellow Wire
-• The DATA pin to P9 pin 18 (I2C1_SDA) - Green Wire
+- The GND pin to P9 pins 1 or 2 (GND) - Purple Wire
+- The PWR pin to P9 pins 3 or 4 (DC_3.3V) - Blue Wire
+- The CLK pin to P9 pin 17 (I2C1_SCL) - Yellow Wire
+- The DATA pin to P9 pin 18 (I2C1_SDA) - Green Wire
 
 <p align="center"><img src="imgs/bbb-nunchuk-connection.jpg" alt="Nunchuk Connection" align="center" width="50%"/>
 
@@ -305,12 +305,12 @@ Read the file configs/emb22109_defconfig generated in the Buildroot sources. You
 
 Identify the options related to the following aspects of the system:
 
-  • The architecture specification
-  • The toolchain definition
-  • The system configuration
-  • The Linux kernel related configuration
-  • The selection of packages
-  • The U-Boot related configuration
+  - The architecture specification
+  - The toolchain definition
+  - The system configuration
+  - The Linux kernel related configuration
+  - The selection of packages
+  - The U-Boot related configuration
 
 ## Testing a full rebuild
 
