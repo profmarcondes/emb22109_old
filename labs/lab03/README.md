@@ -114,7 +114,7 @@ To finalize the package, add the missing hash file, so that people building this
 Once the hash file is added, rebuild the package completely by doing:
 
 ```
-make ninvaders-dirclean all.
+make ninvaders-dirclean all
 ```
 Look at the build output, and before the ninvaders **0.1.1 Extracting** step, you should see a message like this:
 
