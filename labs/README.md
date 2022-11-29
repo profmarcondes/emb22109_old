@@ -5,5 +5,7 @@
 
 [Lab 02](./lab02/README.md)
  - Customizando o RootFS e configurando o acesso à Beaglebone via interface serial
- 
+
+[Lab 03](./lab03/README.md)
+ - Criando novos pacotes no Buildroot
 
