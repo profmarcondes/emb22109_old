@@ -234,9 +234,15 @@ Once Buildroot has finished building the system, it’s time to put it on the SD
 
   - Copy the MLO, u-boot.img, zImage and am335x-boneblack.dtb files from output/images/
 to the boot partition of the SD card.
-  - Extract the rootfs.tar file to the rootfs partition of the SD card, using:
-sudo tar -C /media/$USER/rootfs/ -xf output/images/rootfs.tar .
-  - Create a file named extlinux/extlinux.conf in the boot partition. This file should contain
+    ```
+    cp output/images/{MLO,u-boot.img,zImage,am335x-boneblack.dtb} /media/$USER/boot/
+    ```
+  - Extract the rootfs.tar file to the rootfs partition of the SD card, using:  
+    ```
+    sudo tar -C /media/$USER/rootfs/ -xf output/images/rootfs.tar 
+    ```
+
+- Create a file named extlinux/extlinux.conf in the boot partition. This file should contain
 the following lines:
 
 ```
