@@ -186,8 +186,8 @@ mkdir board/ifsc/beagleboneblack/patches/linux/
 Copy in this directory the two patches that we provided with the data of this lab, in (files/linux):
 
 ```
-cp $HOME/lxe22109-03-labs//buildroot-rootfslinux/*.patch \
-    board/ifsc/beagleboneblack/patches/linux/
+cp labs/lab02/files/linux/*.patch \
+    external/board/ifsc/beagleboneblack/patches/linux/
 ```
 
 The first patch adds the driver, the second patch adjusts the Device Tree. Feel free to look at them. <!--If you’re interested, you can look at our training course Embedded Linux kernel driver development, which precisely covers the development of this driver.-->
