@@ -47,7 +47,7 @@ Additionaly, copy the `S99led` script to your overlay so that it is located in `
 
 ### IP address configuration
 
-By default, Buildroot uses the ifup program from BusyBox, which reads the `/etc/network/interfaces` file to configure network interfaces. So, in `board/ifsc/beagleboneblack/rootfsoverlay`, create a file named `etc/network/interfaces` with the following contents:
+By default, Buildroot uses the ifup program from BusyBox, which reads the `/etc/network/interfaces` file to configure network interfaces. So, in `board/ifsc/beagleboneblack/rootfs-overlay`, create a file named `etc/network/interfaces` with the following contents:
 
 ```
 auto lo
@@ -88,7 +88,6 @@ log-facility local7;
 subnet 192.168.0.0 netmask 255.255.255.0 {
   range 192.168.0.10 192.168.0.50;
   option broadcast-address 192.168.0.255;
-  option routers 192.168.0.1;
 }
 ```
 
@@ -184,14 +183,14 @@ Now, we would like to connect an additional peripheral to our system: the Wii Nu
 We will first create a new directory to store our kernel patches. It will sit next to our *rootfs overlay* in our project-specific directory:
 
 ```
-mkdir board/ifsc/beagleboneblack/patches/linux/
+mkdir -p board/ifsc/beagleboneblack/patches/linux/
 ```
 
 Copy in this directory the two patches that we provided with the data of this lab, in (files/linux):
 
 ```
-cp  labs/lab02/files/linux/*.patch \
-    external/board/ifsc/beagleboneblack/patches/linux/
+cp ../labs/lab02/files/linux/*.patch \
+    board/ifsc/beagleboneblack/patches/linux/
 ```
 
 The first patch adds the driver, the second patch adjusts the Device Tree. Feel free to look at them. <!--If you’re interested, you can look at our training course Embedded Linux kernel driver development, which precisely covers the development of this driver.-->
