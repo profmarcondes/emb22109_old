@@ -43,6 +43,8 @@ Within this directory, create a `rootfs-overlay` directory, and in menuconfig, s
 
 Copy the `S30usbgadget` script to your overlay so that it is located in `board/ifsc/beagleboneblack/rootfs-overlay/etc/init.d/S30usbgadget`. At boot time, the default init system used by Buildroot will execute all scripts named `SXX*` in `/etc/init.d`.
 
+Additionaly, copy the `S99led` script to your overlay so that it is located in `board/ifsc/beagleboneblack/rootfs-overlay/etc/init.d/S99led`. This script will turn on one LED on Beagle Bone to signalize that que boot process is completed.
+
 ### IP address configuration
 
 By default, Buildroot uses the ifup program from BusyBox, which reads the `/etc/network/interfaces` file to configure network interfaces. So, in `board/ifsc/beagleboneblack/rootfsoverlay`, create a file named `etc/network/interfaces` with the following contents:
@@ -59,8 +61,7 @@ iface usb0 inet static
 
 Then, rebuild your system by running `make`. Here as well, we don’t need to do a full rebuild, since the rootfs overlays are applied at the end of each build. You can check in `output/target/etc/init.d/` and `output/target/etc/network/` if both the init script and network configuration files were properly copied.
 
-Reflash the root filesystem on the SD card, and boot your BeagleBone Black. It should now
-have an IP address configured for usb0 by default.
+Reflash the root filesystem on the SD card, and boot your BeagleBone Black. It should now have an IP address configured for usb0 by default.
 
 ## Configure the network on your host
 
@@ -68,10 +69,9 @@ In the next sections of this lab, we will want to interact with the BeagleBone B
 
 ### DHCP Server for automatic configuration
 
-Run make menuconfig, and enable the dhcp (ISC) package. Before select the dhcp (ISC), we
-need to enable Buildroot to show packages that are already provided by Busybox.
+Run make menuconfig, and enable the dhcp (ISC) package. Before select the dhcp (ISC), we need to enable Buildroot to show packages that are already provided by Busybox.
 
-You can use the search capability of menuconfig by typing `/`, enter `SHOW_OTHERS`. It will give you a list of results, and each result is associated with a number between parenthesis, like (1). Then simply press 1, and menuconfig will jump to the right option. Select the option `Show packages that are also provided by busybox`. Now use the search capability again to install package dhcp (ISC).
+You can use the search capability of menuconfig by typing `/`, enter `SHOW_OTHERS`. It will give you a list of results, and each result is associated with a number between parenthesis, like (1). Then simply press 1, and menuconfig will jump to the right option. Select the option `Show packages that are also provided by busybox`. Now use the search capability again to install package dhcp (ISC). Select also the option dhcp server.
 
 Now let´s include in the DHCP server configuration on your rootfs. So, in `board/ifsc/beagleboneblack/rootfs-overlay`, create a file named `etc/dhcp/dhcpd.conf` with the followingcontents:
 
@@ -107,11 +107,9 @@ Once this is done, make sure you can communicate with your target using ping.
 
 ## Add dropbear as an SSH server
 
-As a first additional package to add to our system, let’s add the dropbear SSH client/server.
+Now, let’s add the dropbear SSH client/server. The server will be running on the BeagleBone Black, which will allow us to connect over the network to the BeagleBone Black.
 
-The server will be running on the BeagleBone Black, which will allow us to connect over the network to the BeagleBone Black.
-
-Run make menuconfig, and enable the dropbear package. You can use the search capability of menuconfig by typing /, enter DROPBEAR. It will give you a list of results, and each result is associated with a number between parenthesis, like (1). Then simply press 1, and menuconfig will jump to the right option.
+Run make menuconfig, and enable the dropbear package. Use the search capability of menuconfig by typing /, enter DROPBEAR. It will give you a list of results, and each result is associated with a number between parenthesis, like (1). Then simply press 1, and menuconfig will jump to the right option.
 
 After leaving menuconfig, restart the build by running make. In this case, we do not need to do a full rebuild, because a simple make will notice that the dropbear package has not been built, and will therefore trigger the build process.
 
@@ -171,6 +169,12 @@ Re-run the build of the system by running `make`. Update the *zImage* on the SD 
 
 Write a shell script that creates a file named `/etc/build-id` in the root filesystem, containing the Git commit id of the Buildroot sources, as well as the current date. Since this script will be executed as a post-build script, remember that the first argument passed to the script is `$(TARGET_DIR)`.
 
+```bash
+#!/bin/sh
+
+echo "Buildroot - $(git describe) -  $(date)" > ${TARGET_DIR}/etc/build-id
+```
+
 Register this script as a post-build script in your Buildroot configuration, run a build, and verify that /etc/build-id is created as expected.
 
 ## Patch the Linux kernel
@@ -186,8 +190,8 @@ mkdir board/ifsc/beagleboneblack/patches/linux/
 Copy in this directory the two patches that we provided with the data of this lab, in (files/linux):
 
 ```
-cp $HOME/lxe22109-03-labs//buildroot-rootfslinux/*.patch \
-    board/ifsc/beagleboneblack/patches/linux/
+cp  labs/lab02/files/linux/*.patch \
+    external/board/ifsc/beagleboneblack/patches/linux/
 ```
 
 The first patch adds the driver, the second patch adjusts the Device Tree. Feel free to look at them. <!--If you’re interested, you can look at our training course Embedded Linux kernel driver development, which precisely covers the development of this driver.-->
