@@ -35,7 +35,7 @@ Now everything looks good, but there are some more improvements we can do.
 
 If you look in `output/target/usr/bin`, you can see a program called `libfoo-example1`. This is just an example program for `libfoo`, it is typically not very useful in a real target system. So we would like this example program to not be installed. To achieve this, add a *post-install target hook* that removes `libfoo-example1`. Rebuild the `libfoo` package and verify that `libfoo-example1` has been properly removed.
 
-Now, if you go in `output/build/libfoo-v0.1`, and run `./configure --help` to see the available options, you should see an option named `--enable-debug-output`, which enables a debugging feature of `libfoo`. Add a sub-option in `package/libfoo/Config.in` to enable the debugging feature, and the corresponding code in `libfoo.mk` to pass `--enable-debug-output` or `--disable-debug-output` when appropriate.
+Now, if you go in `output/build/libfoo-v0.1`, and run `./configure --help` to see the available options, you should see an option named `--enable-debug-output`, which enables a debugging feature of `libfoo`. Add a sub-option in `package/libfoo/Config.in` to enable the debugging feature, and the corresponding code in `libfoo.mk` to pass `--enable-debug-output`. <!-- or `--disable-debug-output` when appropriate. -- This not work! HUgom-->
 
 Enable this new option in `menuconfig`, and restart the build of the package. Verify in the build output that `--enable-debug-output` was properly passed as argument to the `configure` script.
 
