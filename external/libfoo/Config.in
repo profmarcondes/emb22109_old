@@ -1,0 +1,6 @@
+config BR2_PACKAGE_LIBFOO
+	bool "libfoo"
+	help
+	  This is a completely stupid piece of source code doing absolutely nothing useful. It is only intended to be used as an exercice for packaging software in Buildroot.
+
+	  https://github.com/tpetazzoni/libfoo

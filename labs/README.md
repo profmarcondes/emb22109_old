@@ -9,3 +9,8 @@
 [Lab 03](./lab03/README.md)
  - Criando novos pacotes no Buildroot
 
+[Lab 04](./lab04/README.md)
+ - Aspectos avançados na criação de pacotes no Buildroot
+
+
+LAB05 -> apt install libncursesw5, libpython2.7

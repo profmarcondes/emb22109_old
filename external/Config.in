@@ -1,4 +1,7 @@
 # Place holder for load packages Config.in
-menu "EMB22109 External Packages"
-
+menu "Games"
+#	source "$BR2_EXTERNAL_EMB22109_PATH/package/ninvaders/Config.in"
+endmenu
+menu "Libraries"
+#	source "$BR2_EXTERNAL_EMB22109_PATH/package/libfoo/Config.in"
 endmenu

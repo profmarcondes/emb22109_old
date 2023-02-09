@@ -1,0 +1,7 @@
+config BR2_PACKAGE_NINVADERS
+	bool "ninvaders"
+	select BR2_PACKAGE_NCURSES
+	help
+	  Pacote do programa nInvaders implementado com nCurses
+
+	  https://sourceforge.net/projects/ninvaders/
