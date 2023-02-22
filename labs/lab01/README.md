@@ -22,7 +22,7 @@ sudo apt install git vim nano
 Instalar as seguintes dependências para uso do Buildroot
 
 ```
-sudo apt install sed make binutils gcc g++ bash patch gzip bzip2 perl tar cpio python unzip rsync wget libncurses-dev
+sudo apt install sed make binutils gcc g++ bash patch gzip bzip2 perl tar cpio python unzip rsync wget libncurses-dev libncursesw5 libpython2.7
 ```
 
 Clonar o repositório com o comando
